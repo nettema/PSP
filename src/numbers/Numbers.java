@@ -106,6 +106,7 @@ public class Numbers {
     }
 
     private static void writeNumbersToFile(String file, List<Float> numbers) {
+        file = Menu.checkFileName(file);
         Float f;
         try (FileWriter writer = new FileWriter(file, false)) {
             for (int i = 0; i < numbers.size(); i++) {
