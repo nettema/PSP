@@ -12,10 +12,10 @@ public class Menu {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public static String modeSelection() {
-        System.out.println("Chose mode!\n1. is for read mode\n2. is for write mode");
+        System.out.println("Chose mode!\n1. is for read mode\n2. is for write mode\n3. regression count for k=2");
         String res = "";
         try {
-            while (!(res = reader.readLine().trim()).matches("[12]")) {
+            while (!(res = reader.readLine().trim()).matches("[123]")) {
                 System.out.println("Please, enter valid option");
             }
         } catch (IOException e) {

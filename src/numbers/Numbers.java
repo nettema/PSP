@@ -23,24 +23,7 @@ public class Numbers {
         List<String> strings = readFile(file);
         List<Float> numbers = null;
         Float f = 0f;
-        List<Float> [] floatArrays = new List[strings.size()];
-        for (int i = 0, stringsSize = strings.size(); i < stringsSize; i++) {
-            String s = strings.get(i);
-            List<String> nums = Arrays.asList(s.split(" "));
-            nums = nums.stream().filter(n -> n.matches("[-]?[1-9]{1}[0-9]*([\\.]{1}[0-9]*)?|0\\.[0-9]+|0")).collect(Collectors.toList());//nums is array of numbers in line
-            if (nums.size() < 1 || nums.size() > K) {
-                System.out.println("Amount of numbers in line " + i + " is violating K-size restriction.");
-                floatArrays[i] = new ArrayList<>(0);
-                continue;
-            }
-            numbers = new ArrayList<>(K);
-            for (String n : nums) {
-                f = Float.parseFloat(n);
-                numbers.add(f);
-                //System.out.println(f);
-            }
-            floatArrays[i] = numbers;
-        }
+        List<Float>[] floatArrays = getFloatArray(file);
 
         for (int j = 0; j < floatArrays.length; j++) {
             numbers = floatArrays[j];
@@ -183,5 +166,63 @@ public class Numbers {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    public static void regression(String file) {
+        System.out.println("Regression calc mode");
+        List<Float>[] floatArrays = getFloatArray(file);
+
+        float N = floatArrays.length;
+        float sumX = 0;
+        float sumY = 0;
+        float sumXY = 0;
+        float sumXSqr = 0;
+        float avgX,avgY;
+        for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
+            List<Float> floatArray = floatArrays[i];
+            if (floatArray.size() != 2) {
+                N--;
+                continue;
+            }
+            float x = floatArray.get(0);
+            float y = floatArray.get(1);
+            sumX += x;
+            sumY += y;
+            sumXY += x * y;
+            sumXSqr += x * x;
+        }
+        if (N == 0) {
+            System.out.println("No Data");
+            return;
+        }
+        avgX = sumX / N;
+        avgY = sumY / N;
+        float regr = (sumXY - N*avgX*avgY) / (sumXSqr - N*avgX*avgX);
+        System.out.println("regression is " + regr);
+    }
+
+    private static List<Float>[] getFloatArray(String file) {
+        List<String> strings = readFile(file);
+        List<Float> numbers = null;
+        Float f = 0f;
+        List<Float> [] floatArrays = new List[strings.size()];
+        for (int i = 0, stringsSize = strings.size(); i < stringsSize; i++) {
+            String s = strings.get(i);
+            List<String> nums = Arrays.asList(s.split("[ ]+"));
+            nums = nums.stream().filter(n -> n.matches("[-]?[1-9]{1}[0-9]*([\\.]{1}[0-9]*)?|0\\.[0-9]+|0")).collect(Collectors.toList());//nums is array of numbers in line
+            if (nums.size() != K) {
+                System.out.println("Amount of numbers in line " + i + " is violating K-size restriction.");
+                floatArrays[i] = new ArrayList<>(0);
+                continue;
+            }
+            numbers = new ArrayList<>(K);
+            for (String n : nums) {
+                f = Float.parseFloat(n);
+                numbers.add(f);
+                //System.out.println(f);
+            }
+            floatArrays[i] = numbers;
+        }
+        return floatArrays;
     }
 }
