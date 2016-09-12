@@ -19,6 +19,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
+        System.out.println("Please enter K number which is maximal array size to be held");
+        Numbers.setK(Menu.readArrayLimit());
         switch (mode) {
             case "1":
                 File f = null;

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Menu {
@@ -71,6 +73,28 @@ public class Menu {
         return Float.parseFloat(readUserDigit());
     }
 
+    public static String readUserDigits() {
+        System.out.println("Please, enter a list of numbers separated by space");
+        String res = "";
+        try {
+            while (!(res = reader.readLine().trim()).matches("([-]?[1-9]{1}[0-9]*([\\.]{1}[0-9]*)?|[-]?0\\.[0-9]+|0)(\\h([-]?[1-9]{1}[0-9]*([\\.]{1}[0-9]*)?|[-]?0\\.[0-9]+|0))*")) {
+                System.out.println("Enter the number of a valid form.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static List<Float> readUserFloats() {
+        String[] nums = readUserDigits().split("\\h");
+        List<Float> floats = new ArrayList<>(nums.length);
+        for (String num : nums) {
+            floats.add(Float.parseFloat(num));
+        }
+        return floats;
+    }
+
     public static String saveOption() {
         System.out.println("What would you like to save to existing file?");
         System.out.println("1. Yes");
@@ -86,7 +110,7 @@ public class Menu {
         return res;
     }
 
-    public static String yesNoChoise(String msg) {
+    public static String yesNoChoice(String msg) {
         System.out.println(msg);
         System.out.println("1. Yes");
         System.out.println("2. No");
@@ -117,7 +141,7 @@ public class Menu {
     public static String checkFileName(String fName) {
         File file = new File(fName);
         if (file.exists() && file.isFile()) {
-            switch (Menu.yesNoChoise("File is already exists, do you want to rewrite it?")) {
+            switch (Menu.yesNoChoice("File is already exists, do you want to rewrite it?")) {
                 case "1":
                     return fName;
                 case "2":
@@ -128,11 +152,24 @@ public class Menu {
     }
 
     public static int numbersToSave() {
-        System.out.println("Enter ammount of numbers you wish to save?");
+        System.out.println("Enter ammount of lines you wish to save?");
         String res = "";
         try {
             while (!(res = reader.readLine().trim()).matches("[1-9]{1}[0-9]{0,7}|[0]")) {
                 System.out.println("Please, enter valid option");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Integer.parseInt(res);
+    }
+
+    public static int readArrayLimit() {
+        System.out.println("Please, array's size limit");
+        String res = "";
+        try {
+            while (!(res = reader.readLine().trim()).matches("[1-9]{1}[0-9]*")) {
+                System.out.println("Enter the integer number of a valid form.");
             }
         } catch (IOException e) {
             e.printStackTrace();
