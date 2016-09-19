@@ -94,6 +94,14 @@ public class Menu {
         }
         return floats;
     }
+    public static List<Integer> readUserInts() {
+        String[] nums = readUserDigits().split("\\h");
+        List<Integer> ints = new ArrayList<>(nums.length);
+        for (String num : nums) {
+            ints.add(Integer.parseInt(num));
+        }
+        return ints;
+    }
 
     public static String saveOption() {
         System.out.println("What would you like to save to existing file?");

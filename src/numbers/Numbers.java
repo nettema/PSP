@@ -171,7 +171,7 @@ public class Numbers {
     public static void regression(String file) {
         System.out.println("Regression calc mode");
         List<Float>[] floatArrays = getFloatArray(file);
-
+        List<Integer> planedX = Menu.readUserInts();
         float N = floatArrays.length;
         float sumX = 0;
         float sumY = 0;
@@ -197,8 +197,51 @@ public class Numbers {
         }
         avgX = sumX / N;
         avgY = sumY / N;
-        float regr = (sumXY - N*avgX*avgY) / (sumXSqr - N*avgX*avgX);
-        System.out.println("regression is " + regr);
+        float beta1 = (sumXY - N*avgX*avgY) / (sumXSqr - N*avgX*avgX);
+        float beta0 = avgY - beta1 * avgX;
+        List<Integer> estimationsY = new ArrayList<>(planedX.size());
+        for (int i = 0, planedXSize = planedX.size(); i < planedXSize; i++) {
+            Integer x = planedX.get(i);
+            estimationsY.add(Math.round(beta0 + beta1 * x));
+        }
+        float sigmaSum = 0;
+        float sumVariant = 0;
+        for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
+            List<Float> floatArray = floatArrays[i];
+            if (floatArray.size() != 2) {
+                N--;
+                continue;
+            }
+            float x = floatArray.get(0);
+            float y = floatArray.get(1);
+            float tmp = (y - beta0 - beta1 * x);
+            sumVariant += tmp*tmp;
+            sigmaSum += (x - avgX) * (x - avgX);
+        }
+        float variance = (1 / (N - 2)) * sumVariant;
+        float stdDerivation = (float) Math.sqrt(variance);//sigma?
+        System.out.println("regression is " + beta1);
+        System.out.println("Beta_0 is " + beta0);
+        System.out.println("Sigma is " + stdDerivation);
+        float t90 = 1.860f;
+        float t70 = 1.108f;
+        for (int i = 0, planedXSize = planedX.size(); i < planedXSize; i++) {
+            int planX = planedX.get(i);
+            int estimatedY = estimationsY.get(i);
+            System.out.println("Planned LOC = " + planX + ";\tEstimated Y = " + estimatedY);
+            float range = (float) (t90 * stdDerivation * Math.sqrt(1 + 1 / N + Math.pow((planX - avgX), 2) / sigmaSum));
+            System.out.print("Range(90) is " + range);
+            int UPI = estimatedY + Math.round(range);
+            int LPI = estimatedY - Math.round(range);
+            System.out.print(";\tUPI is " + UPI);
+            System.out.println(";\tLPI is " + LPI);
+            range = (float) (t70 * stdDerivation * Math.sqrt(1 + 1 / N + Math.pow((planX - avgX), 2) / sigmaSum));
+            System.out.print("Range(70) is " + range);
+            UPI = estimatedY + Math.round(range);
+            LPI = estimatedY - Math.round(range);
+            System.out.print(";\tUPI is " + UPI);
+            System.out.println(";\tLPI is " + LPI + "\n");
+        }
     }
 
     private static List<Float>[] getFloatArray(String file) {
