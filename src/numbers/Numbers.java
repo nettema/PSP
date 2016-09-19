@@ -1,10 +1,7 @@
 package numbers;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Numbers {
@@ -41,7 +38,8 @@ public class Numbers {
                     case "3":
                         if (numbers.size() == 1) {
                             System.out.println("can't remove. Violation of arr.size >= 1");
-                            i--;continue;
+                            i--;
+                            continue;
                         }
                         numbers.remove(i);
                         i--;
@@ -49,7 +47,8 @@ public class Numbers {
                     case "4":
                         if (numbers.size() == K) {
                             System.out.println("can't add. violation of K restriction");
-                            i--;continue;
+                            i--;
+                            continue;
                         }
                         f = Menu.readUserFloat();
                         switch (Menu.insertPos()) {
@@ -102,6 +101,26 @@ public class Numbers {
         writeNumbersToFile(Menu.readFileName(), floatArrays);
     }
 
+    public static void sort(String file) {
+        System.out.println("Entering read mode");
+        List<Float>[] floatArrays = getFloatArray(file);
+        Pair[] pairs = new Pair[floatArrays.length];
+        System.out.println("enter row number to sort");
+        int pos = Menu.readArrayLimit() - 1;
+        if (pos < 0 || pos >= floatArrays[0].size()) {
+            System.out.println("Size is bigger than row. Bye");
+            return;
+        }
+        for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
+            List<Float> row = floatArrays[i];
+            pairs[i] = new Pair(row.get(pos), row);
+        }
+        pairs = (Pair[]) mergeSort(pairs);
+        for (Pair p : pairs) {
+            System.out.println(p.getValue());
+        }
+    }
+
 
     private static List<String> readFile(String file) {
         FileReader fileReader = null;
@@ -121,7 +140,7 @@ public class Numbers {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 fileReader.close();
             } catch (IOException e1) {
@@ -177,7 +196,7 @@ public class Numbers {
         float sumY = 0;
         float sumXY = 0;
         float sumXSqr = 0;
-        float avgX,avgY;
+        float avgX, avgY;
         for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
             List<Float> floatArray = floatArrays[i];
             if (floatArray.size() != 2) {
@@ -197,7 +216,7 @@ public class Numbers {
         }
         avgX = sumX / N;
         avgY = sumY / N;
-        float beta1 = (sumXY - N*avgX*avgY) / (sumXSqr - N*avgX*avgX);
+        float beta1 = (sumXY - N * avgX * avgY) / (sumXSqr - N * avgX * avgX);
         float beta0 = avgY - beta1 * avgX;
         List<Integer> estimationsY = new ArrayList<>(planedX.size());
         for (int i = 0, planedXSize = planedX.size(); i < planedXSize; i++) {
@@ -215,7 +234,7 @@ public class Numbers {
             float x = floatArray.get(0);
             float y = floatArray.get(1);
             float tmp = (y - beta0 - beta1 * x);
-            sumVariant += tmp*tmp;
+            sumVariant += tmp * tmp;
             sigmaSum += (x - avgX) * (x - avgX);
         }
         float variance = (1 / (N - 2)) * sumVariant;
@@ -248,7 +267,7 @@ public class Numbers {
         List<String> strings = readFile(file);
         List<Float> numbers = null;
         Float f = 0f;
-        List<Float> [] floatArrays = new List[strings.size()];
+        List<Float>[] floatArrays = new List[strings.size()];
         for (int i = 0, stringsSize = strings.size(); i < stringsSize; i++) {
             String s = strings.get(i);
             List<String> nums = Arrays.asList(s.split("[ ]+"));
@@ -268,4 +287,45 @@ public class Numbers {
         }
         return floatArrays;
     }
+
+    //Merge from http://howtodoinjava.com/algorithm/merge-sort-java-example/
+    public static Comparable[] mergeSort(Comparable[] list) {
+        if (list.length <= 1) {
+            return list;
+        }
+
+        Comparable[] first = new Comparable[list.length / 2];
+        Comparable[] second = new Comparable[list.length - first.length];
+        System.arraycopy(list, 0, first, 0, first.length);
+        System.arraycopy(list, first.length, second, 0, second.length);
+
+        mergeSort(first);
+        mergeSort(second);
+
+        merge(first, second, list);
+        return list;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void merge(Comparable[] first, Comparable[] second, Comparable[] result) {
+        int iFirst = 0;
+
+        int iSecond = 0;
+
+        int iMerged = 0;
+
+        while (iFirst < first.length && iSecond < second.length) {
+            if (first[iFirst].compareTo(second[iSecond]) < 0) {
+                result[iMerged] = first[iFirst];
+                iFirst++;
+            } else {
+                result[iMerged] = second[iSecond];
+                iSecond++;
+            }
+            iMerged++;
+        }
+        System.arraycopy(first, iFirst, result, iMerged, first.length - iFirst);
+        System.arraycopy(second, iSecond, result, iMerged, second.length - iSecond);
+    }
+
 }
