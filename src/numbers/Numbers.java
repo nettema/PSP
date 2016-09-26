@@ -1,7 +1,10 @@
 package numbers;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Numbers {
@@ -121,7 +124,6 @@ public class Numbers {
             System.out.println(p.getValue());
         }
     }
-
 
     private static List<String> readFile(String file) {
         FileReader fileReader = null;
