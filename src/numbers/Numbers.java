@@ -262,6 +262,55 @@ public class Numbers {
         }
     }
 
+    public static void stdDeviation(String file) {
+        System.out.println("Count standard deviation and stuff");
+        List<Float>[] floatArrays = getFloatArray(file);
+//        if (floatArrays.length < 4) {
+//            System.out.println("Not enough data to analise. Must be at least 4 columns(rows maybe??)");
+//            return;
+//        }
+        float min;
+        float max;
+        float avg = 0;
+        double stdDev = 0;
+        int n = 0;
+        System.out.println("Enter row number to Work with");
+        int colNum = Menu.readArrayLimit() - 1;
+        min = floatArrays[0].get(colNum);
+        max = min;
+        for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
+            List<Float> row = floatArrays[i];
+            if (row.size() < 4) {
+                System.out.println("Not enough data to analise. Must be at least 4 columns(rows maybe??)");
+                return;
+            }
+            float num = row.get(colNum);
+            max = max > num ? max : num;
+            min = min < num ? min : num;
+            avg += num;
+            n++;
+        }
+        avg = avg / n;
+        for (int i = 0, floatArraysLength = floatArrays.length; i < floatArraysLength; i++) {
+            List<Float> row = floatArrays[i];
+            float num = row.get(colNum);
+            stdDev += (num - avg) * (num - avg);
+        }
+        stdDev = Math.sqrt(stdDev / (n - 1));
+
+        System.out.println("For column #" + (colNum + 1) + ":\nMax = " + max + ";\tMin = " + min + ";\tAverage = " + avg + "\nStandard derivation = " + stdDev);
+        switch (Menu.yesNoChoice("Would you like to save data?")) {
+            case "1":
+                String f = Menu.readFileName();
+                List<Float> data = Arrays.asList(max, min, avg, ((Double) stdDev).floatValue());
+                writeNumbersToFile(f, data);
+                break;
+            case "2":
+                System.out.println("Good bye!");
+                return;
+        }
+    }
+
     private static List<Float>[] getFloatArray(String file) {
         List<String> strings = readFile(file);
         List<Float> numbers = null;

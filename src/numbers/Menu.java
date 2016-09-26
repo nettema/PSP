@@ -13,10 +13,10 @@ public class Menu {
 
     public static String modeSelection() {
         System.out.println("Chose mode!\n1. is for read mode\n2. is for write mode\n3. regression count for k=2" +
-                "\n4. Sort array");
+                "\n4. Sort array\n5. Standard derivation and stuff");
         String res = "";
         try {
-            while (!(res = reader.readLine().trim()).matches("[1234]")) {
+            while (!(res = reader.readLine().trim()).matches("[12345]")) {
                 System.out.println("Please, enter valid option");
             }
         } catch (IOException e) {

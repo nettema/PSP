@@ -40,6 +40,13 @@ public class Main {
                 setk();
                 Numbers.sort(f.getPath());
                 break;
+            case "5":
+                while (!(f = new File(Menu.readFileName())).exists() || f.isDirectory()) {
+                    System.out.println("File is not existing. Enter filename to read from.");
+                }
+                setk();
+                Numbers.stdDeviation(f.getPath());
+                break;
             default:
                 System.out.println("Wrong option");
                 break;
