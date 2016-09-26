@@ -15,10 +15,6 @@ public class Numbers {
         K = k;
     }
 
-    public static int getK() {
-        return K;
-    }
-
     static void readMode(String file) {
         System.out.println("Entering read mode");
         List<String> strings = readFile(file);
